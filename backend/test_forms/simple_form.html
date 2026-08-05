@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormPilot Test — Simple Application Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .container { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,.08); padding: 40px; max-width: 640px; width: 100%; margin: 20px; }
+    h1 { font-size: 24px; color: #1a1a2e; margin-bottom: 8px; }
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+    .field { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #333; margin-bottom: 6px; }
+    .required { color: #e53e3e; }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color .2s; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .section { border-top: 1px solid #eee; padding-top: 24px; margin-top: 24px; }
+    .section-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+    textarea { resize: vertical; min-height: 80px; }
+    .submit-btn { width: 100%; background: #6366f1; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 24px; transition: background .2s; }
+    .submit-btn:hover { background: #4f46e5; }
+    .hint { font-size: 11px; color: #999; margin-top: 4px; }
+    .error-message { font-size: 12px; color: #e53e3e; margin-top: 4px; display: none; }
+    input:invalid + .error-message { display: block; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Job Application Form</h1>
+  <p class="subtitle">TCS — Agentic AI Engineer | Test Form for FormPilot AI</p>
+  
+  <form id="application-form" novalidate>
+    <!-- Personal -->
+    <div class="section">
+      <div class="section-title">Personal Information</div>
+      <div class="grid">
+        <div class="field">
+          <label for="first_name">First Name <span class="required">*</span></label>
+          <input type="text" id="first_name" name="first_name" placeholder="Your first name" required maxlength="50" />
+          <p class="error-message">First name is required</p>
+        </div>
+        <div class="field">
+          <label for="last_name">Last Name <span class="required">*</span></label>
+          <input type="text" id="last_name" name="last_name" placeholder="Your last name" required maxlength="50" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="candidate_email">Email Address <span class="required">*</span></label>
+        <input type="email" id="candidate_email" name="candidate_email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label for="candidate_phone">Mobile Number <span class="required">*</span></label>
+        <input type="tel" id="candidate_phone" name="candidate_phone" placeholder="+91 99999 99999" required />
+      </div>
+      <div class="field">
+        <label for="date_of_birth">Date of Birth</label>
+        <input type="date" id="date_of_birth" name="date_of_birth" />
+      </div>
+      <div class="field">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender">
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Non-binary">Non-binary</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="section">
+      <div class="section-title">Current Address</div>
+      <div class="field">
+        <label for="address_line1">Address Line 1 <span class="required">*</span></label>
+        <input type="text" id="address_line1" name="address_line1" placeholder="Street address" required />
+      </div>
+      <div class="field">
+        <label for="address_line2">Address Line 2</label>
+        <input type="text" id="address_line2" name="address_line2" placeholder="Apartment, suite, etc." />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="city">City <span class="required">*</span></label>
+          <input type="text" id="city" name="city" placeholder="City" required />
+        </div>
+        <div class="field">
+          <label for="state">State</label>
+          <input type="text" id="state" name="state" placeholder="State" />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="country">Country <span class="required">*</span></label>
+          <select id="country" name="country" required>
+            <option value="">Select country</option>
+            <option value="India" selected>India</option>
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Canada">Canada</option>
+            <option value="Australia">Australia</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pincode">PIN Code</label>
+          <input type="text" id="pincode" name="pincode" placeholder="6-digit PIN" pattern="[0-9]{6}" maxlength="6" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Role Details -->
+    <div class="section">
+      <div class="section-title">Role &amp; Application Details</div>
+      <div class="field">
+        <label for="applying_for">Applying For <span class="required">*</span></label>
+        <select id="applying_for" name="applying_for" required>
+          <option value="">Select a role</option>
+          <option value="Agentic AI Engineer">Agentic AI Engineer</option>
+          <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+          <option value="Data Scientist">Data Scientist</option>
+          <option value="Software Engineer">Software Engineer</option>
+          <option value="Full Stack Developer">Full Stack Developer</option>
+        </select>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="experience_years">Total Experience (years) <span class="required">*</span></label>
+          <input type="number" id="experience_years" name="experience_years" placeholder="0" min="0" max="50" required />
+        </div>
+        <div class="field">
+          <label for="current_ctc">Current CTC (LPA)</label>
+          <input type="number" id="current_ctc" name="current_ctc" placeholder="e.g. 8" min="0" />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="expected_ctc">Expected CTC (LPA) <span class="required">*</span></label>
+          <input type="number" id="expected_ctc" name="expected_ctc" placeholder="e.g. 12" required min="0" />
+        </div>
+        <div class="field">
+          <label for="notice_period">Notice Period <span class="required">*</span></label>
+          <select id="notice_period" name="notice_period" required>
+            <option value="">Select</option>
+            <option value="Immediate">Immediate</option>
+            <option value="15 days">15 days</option>
+            <option value="30 days">30 days</option>
+            <option value="60 days">60 days</option>
+            <option value="90 days">90 days</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="work_mode_preference">Preferred Work Mode</label>
+        <select id="work_mode_preference" name="work_mode_preference">
+          <option value="">Select</option>
+          <option value="Remote">Remote</option>
+          <option value="On-site">On-site</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="willing_to_relocate">Willing to Relocate?</label>
+        <select id="willing_to_relocate" name="willing_to_relocate">
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Maybe">Maybe — depends on location</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="preferred_location">Preferred Location</label>
+        <input type="text" id="preferred_location" name="preferred_location" placeholder="e.g. Bengaluru, Mumbai, Remote" />
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div class="field">
+        <label for="highest_qualification">Highest Qualification <span class="required">*</span></label>
+        <select id="highest_qualification" name="highest_qualification" required>
+          <option value="">Select</option>
+          <option value="Class 10">Class 10</option>
+          <option value="Class 12">Class 12</option>
+          <option value="Diploma">Diploma</option>
+          <option value="Bachelor's">Bachelor's Degree</option>
+          <option value="Master's">Master's Degree</option>
+          <option value="PhD">PhD</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="institution_name">Institution Name <span class="required">*</span></label>
+        <input type="text" id="institution_name" name="institution_name" placeholder="e.g. IIT Bombay" required />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="graduation_year">Graduation Year</label>
+          <input type="number" id="graduation_year" name="graduation_year" placeholder="e.g. 2024" min="1990" max="2030" />
+        </div>
+        <div class="field">
+          <label for="cgpa">CGPA / Percentage</label>
+          <input type="text" id="cgpa" name="cgpa" placeholder="e.g. 8.5 or 85%" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume -->
+    <div class="section">
+      <div class="section-title">Documents</div>
+      <div class="field">
+        <label for="resume_upload">Resume / CV <span class="required">*</span></label>
+        <input type="file" id="resume_upload" name="resume_upload" accept=".pdf,.doc,.docx" required />
+        <p class="hint">Accepted: PDF, DOC, DOCX — Max 5MB</p>
+      </div>
+      <div class="field">
+        <label for="cover_letter">Cover Letter</label>
+        <textarea id="cover_letter" name="cover_letter" placeholder="Write a brief cover letter (optional)"></textarea>
+      </div>
+      <div class="field">
+        <label for="linkedin_url">LinkedIn Profile</label>
+        <input type="url" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/yourprofile" />
+      </div>
+      <div class="field">
+        <label for="github_url">GitHub Profile</label>
+        <input type="url" id="github_url" name="github_url" placeholder="https://github.com/yourusername" />
+      </div>
+    </div>
+
+    <!-- Declaration -->
+    <div class="section">
+      <div class="field">
+        <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+          <input type="checkbox" id="declaration" name="declaration" required style="width: auto; margin-top: 2px;" />
+          <span style="font-size: 13px; color: #555;">
+            I declare that all information provided is accurate and complete. I understand that any false information may result in disqualification.
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('application-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = {};
+    new FormData(this).forEach((v, k) => { data[k] = v; });
+    alert('✅ Form submitted successfully!\n\nThis is a test form for FormPilot AI.\nSubmit was intercepted — no real data sent.\n\nFilled data:\n' + JSON.stringify(data, null, 2).substring(0, 500));
+  });
+</script>
+</body>
+</html>

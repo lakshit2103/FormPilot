@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormPilot Test — Multi-Page Application Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .container { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,.08); padding: 40px; max-width: 600px; width: 100%; margin: 20px; }
+    h1 { font-size: 22px; color: #1a1a2e; margin-bottom: 6px; }
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 28px; margin-top: 16px; }
+    .step { flex: 1; height: 4px; border-radius: 2px; background: #e5e7eb; transition: background .3s; }
+    .step.active { background: #6366f1; }
+    .step.done { background: #10b981; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-title { font-size: 16px; font-weight: 700; color: #374151; margin-bottom: 20px; }
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .required { color: #ef4444; }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; transition: border-color .2s; }
+    input:focus, select:focus, textarea:focus { border-color: #6366f1; }
+    textarea { resize: vertical; min-height: 80px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-row { display: flex; gap: 12px; margin-top: 28px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+    .btn-prev { background: #f3f4f6; color: #374151; flex: 1; }
+    .btn-next { background: #6366f1; color: white; flex: 2; }
+    .btn-submit { background: #10b981; color: white; flex: 2; }
+    .btn:hover { opacity: .9; }
+    .page-counter { text-align: right; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+    .radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-item { display: flex; align-items: center; gap: 8px; }
+    .radio-item input[type="radio"] { width: 16px; height: 16px; }
+    .checkbox-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Agentic AI Engineer Application</h1>
+  <p style="color: #6b7280; font-size:13px;">TCS NextGen Hiring | Multi-Page Test Form</p>
+
+  <div class="step-indicator">
+    <div class="step active" id="step-1"></div>
+    <div class="step" id="step-2"></div>
+    <div class="step" id="step-3"></div>
+    <div class="step" id="step-4"></div>
+  </div>
+
+  <form id="multi-form">
+    <!-- Page 1: Personal -->
+    <div class="page active" data-page="1">
+      <p class="page-counter">Step 1 of 4</p>
+      <div class="page-title">👤 Personal Information</div>
+      <div class="grid">
+        <div class="field">
+          <label for="mp_first_name">First Name <span class="required">*</span></label>
+          <input type="text" id="mp_first_name" name="first_name" placeholder="First name" required />
+        </div>
+        <div class="field">
+          <label for="mp_last_name">Last Name <span class="required">*</span></label>
+          <input type="text" id="mp_last_name" name="last_name" placeholder="Last name" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="mp_email">Email Address <span class="required">*</span></label>
+        <input type="email" id="mp_email" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label for="mp_phone">Phone Number <span class="required">*</span></label>
+        <input type="tel" id="mp_phone" name="phone" placeholder="+91 XXXXX XXXXX" required />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="mp_dob">Date of Birth</label>
+          <input type="date" id="mp_dob" name="date_of_birth" />
+        </div>
+        <div class="field">
+          <label for="mp_gender">Gender</label>
+          <select id="mp_gender" name="gender">
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-next" onclick="goToPage(2)">Next: Address →</button>
+      </div>
+    </div>
+
+    <!-- Page 2: Address -->
+    <div class="page" data-page="2">
+      <p class="page-counter">Step 2 of 4</p>
+      <div class="page-title">📍 Address Details</div>
+      <div class="field">
+        <label for="mp_addr1">Current Address <span class="required">*</span></label>
+        <input type="text" id="mp_addr1" name="current_address" placeholder="Street address" required />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="mp_city">City <span class="required">*</span></label>
+          <input type="text" id="mp_city" name="city" placeholder="City" required />
+        </div>
+        <div class="field">
+          <label for="mp_state">State</label>
+          <input type="text" id="mp_state" name="state" placeholder="State" />
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="mp_country">Country <span class="required">*</span></label>
+          <select id="mp_country" name="country" required>
+            <option value="India" selected>India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mp_pin">PIN Code</label>
+          <input type="text" id="mp_pin" name="pincode" placeholder="6-digit PIN" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-prev" onclick="goToPage(1)">← Back</button>
+        <button type="button" class="btn btn-next" onclick="goToPage(3)">Next: Experience →</button>
+      </div>
+    </div>
+
+    <!-- Page 3: Professional -->
+    <div class="page" data-page="3">
+      <p class="page-counter">Step 3 of 4</p>
+      <div class="page-title">💼 Professional Details</div>
+      <div class="field">
+        <label>Are you a fresher? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="is_fresher" value="Yes" id="fresher_yes" /> Yes, I'm a fresher</label>
+          <label class="radio-item"><input type="radio" name="is_fresher" value="No" id="fresher_no" checked /> No, I have work experience</label>
+        </div>
+      </div>
+      <div class="field" id="exp_years_field">
+        <label for="mp_exp">Total Experience (years) <span class="required">*</span></label>
+        <input type="number" id="mp_exp" name="experience_years" placeholder="e.g. 2" min="0" max="50" />
+      </div>
+      <div class="field">
+        <label for="mp_current_company">Current / Last Company</label>
+        <input type="text" id="mp_current_company" name="current_company" placeholder="Company name" />
+      </div>
+      <div class="field">
+        <label for="mp_current_role">Current / Last Role</label>
+        <input type="text" id="mp_current_role" name="current_role" placeholder="Job title" />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="mp_notice">Notice Period <span class="required">*</span></label>
+          <select id="mp_notice" name="notice_period" required>
+            <option value="">Select</option>
+            <option>Immediate</option><option>15 days</option><option>30 days</option><option>60 days</option><option>90 days</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mp_expected_ctc">Expected CTC (LPA) <span class="required">*</span></label>
+          <input type="number" id="mp_expected_ctc" name="expected_ctc" placeholder="e.g. 12" required />
+        </div>
+      </div>
+      <div class="field">
+        <label>Willing to Relocate?</label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="willing_relocate" value="Yes" /> Yes</label>
+          <label class="radio-item"><input type="radio" name="willing_relocate" value="No" /> No</label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-prev" onclick="goToPage(2)">← Back</button>
+        <button type="button" class="btn btn-next" onclick="goToPage(4)">Next: Documents →</button>
+      </div>
+    </div>
+
+    <!-- Page 4: Documents -->
+    <div class="page" data-page="4">
+      <p class="page-counter">Step 4 of 4</p>
+      <div class="page-title">📎 Documents &amp; Links</div>
+      <div class="field">
+        <label for="mp_resume">Resume / CV <span class="required">*</span></label>
+        <input type="file" id="mp_resume" name="resume" accept=".pdf,.doc,.docx" required />
+      </div>
+      <div class="field">
+        <label for="mp_linkedin">LinkedIn URL</label>
+        <input type="url" id="mp_linkedin" name="linkedin_url" placeholder="https://linkedin.com/in/..." />
+      </div>
+      <div class="field">
+        <label for="mp_github">GitHub URL</label>
+        <input type="url" id="mp_github" name="github_url" placeholder="https://github.com/..." />
+      </div>
+      <div class="field">
+        <label for="mp_portfolio">Portfolio / Website</label>
+        <input type="url" id="mp_portfolio" name="portfolio_url" placeholder="https://yoursite.com" />
+      </div>
+      <div class="field">
+        <label for="mp_cover">Cover Letter</label>
+        <textarea id="mp_cover" name="cover_letter" placeholder="Write a brief cover letter…"></textarea>
+      </div>
+      <div class="field">
+        <label class="checkbox-item">
+          <input type="checkbox" id="mp_declaration" name="declaration" required />
+          I confirm that all information provided is true and accurate.
+        </label>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-prev" onclick="goToPage(3)">← Back</button>
+        <button type="submit" class="btn btn-submit">✅ Submit Application</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  let currentPage = 1;
+  const totalPages = 4;
+
+  function goToPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-page="${page}"]`).classList.add('active');
+    document.querySelectorAll('.step').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i + 1 === page) s.classList.add('active');
+      if (i + 1 < page) s.classList.add('done');
+    });
+    currentPage = page;
+    window.scrollTo(0, 0);
+  }
+
+  // Dynamic field: hide/show experience field based on fresher radio
+  document.querySelectorAll('[name="is_fresher"]').forEach(r => {
+    r.addEventListener('change', function() {
+      document.getElementById('exp_years_field').style.display = this.value === 'Yes' ? 'none' : 'block';
+    });
+  });
+
+  document.getElementById('multi-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('✅ Multi-page form submitted!\n\nFormPilot AI test complete.\nSubmit intercepted — no real data sent.');
+  });
+</script>
+</body>
+</html>
