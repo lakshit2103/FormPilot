@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Form — FormPilot Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; color: #f1f5f9; }
+    .subtitle { font-size: 0.875rem; color: #64748b; margin-bottom: 32px; }
+    .section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .section h2 { font-size: 1rem; font-weight: 600; margin-bottom: 18px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; color: #cbd5e1; }
+    label .req { color: #f87171; margin-left: 2px; }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: #e2e8f0; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: #6366f1; }
+    select option { background: #1e293b; }
+    .hidden { display: none !important; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .help { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .checkbox-group label { display: flex; align-items: center; gap: 8px; font-weight: 400; cursor: pointer; }
+    .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; }
+    .submit-btn { width: 100%; padding: 14px; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+    .submit-btn:hover { background: #4f46e5; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; background: #1e3a5f; color: #60a5fa; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="badge">FormPilot Test — Dynamic Form</div>
+  <h1>Job Application Form</h1>
+  <p class="subtitle">Fields appear and change based on your selections. Tests FormPilot's dynamic re-scan capability.</p>
+
+  <form id="dynamic-application-form" novalidate>
+
+    <!-- Section 1: Basic Info -->
+    <div class="section">
+      <h2>Personal Information</h2>
+      <div class="row">
+        <div class="field">
+          <label for="first_name">First Name <span class="req">*</span></label>
+          <input type="text" id="first_name" name="first_name" placeholder="First name" required autocomplete="given-name" />
+        </div>
+        <div class="field">
+          <label for="last_name">Last Name <span class="req">*</span></label>
+          <input type="text" id="last_name" name="last_name" placeholder="Last name" required autocomplete="family-name" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="email">Email Address <span class="req">*</span></label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="phone">Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required autocomplete="tel" />
+      </div>
+    </div>
+
+    <!-- Section 2: Role Selection (triggers dynamic fields) -->
+    <div class="section">
+      <h2>Role Details</h2>
+      <div class="field">
+        <label for="role_type">Applying For <span class="req">*</span></label>
+        <select id="role_type" name="role_type" required onchange="handleRoleChange(this.value)">
+          <option value="">— Select role type —</option>
+          <option value="fulltime">Full-Time Employee</option>
+          <option value="internship">Internship</option>
+          <option value="contract">Contract / Freelance</option>
+        </select>
+      </div>
+
+      <!-- Shown only for Full-Time -->
+      <div id="fulltime_fields" class="hidden">
+        <div class="field">
+          <label for="notice_period">Notice Period <span class="req">*</span></label>
+          <select id="notice_period" name="notice_period">
+            <option value="">Select notice period</option>
+            <option value="immediate">Immediate / Serving Notice</option>
+            <option value="15_days">15 days</option>
+            <option value="30_days">30 days</option>
+            <option value="60_days">60 days</option>
+            <option value="90_days">90 days</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="current_ctc">Current CTC (₹ LPA)</label>
+          <input type="number" id="current_ctc" name="current_ctc" placeholder="e.g. 8.5" min="0" step="0.1" />
+        </div>
+        <div class="field">
+          <label for="expected_ctc">Expected CTC (₹ LPA) <span class="req">*</span></label>
+          <input type="number" id="expected_ctc" name="expected_ctc" placeholder="e.g. 12" min="0" step="0.1" />
+        </div>
+      </div>
+
+      <!-- Shown only for Internship -->
+      <div id="internship_fields" class="hidden">
+        <div class="field">
+          <label for="internship_duration">Internship Duration <span class="req">*</span></label>
+          <select id="internship_duration" name="internship_duration">
+            <option value="">Select duration</option>
+            <option value="1_month">1 Month</option>
+            <option value="2_months">2 Months</option>
+            <option value="3_months">3 Months</option>
+            <option value="6_months">6 Months</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="stipend_expectation">Stipend Expectation (₹/month)</label>
+          <input type="number" id="stipend_expectation" name="stipend_expectation" placeholder="e.g. 15000" />
+        </div>
+        <div class="field">
+          <label for="college_name">College / University <span class="req">*</span></label>
+          <input type="text" id="college_name" name="college_name" placeholder="Your institution" />
+        </div>
+        <div class="field">
+          <label for="graduation_year">Expected Graduation Year <span class="req">*</span></label>
+          <input type="number" id="graduation_year" name="graduation_year" placeholder="2025" min="2024" max="2030" />
+        </div>
+      </div>
+
+      <!-- Shown only for Contract -->
+      <div id="contract_fields" class="hidden">
+        <div class="field">
+          <label for="hourly_rate">Hourly Rate (₹) <span class="req">*</span></label>
+          <input type="number" id="hourly_rate" name="hourly_rate" placeholder="e.g. 2500" />
+        </div>
+        <div class="field">
+          <label for="contract_duration">Contract Duration</label>
+          <input type="text" id="contract_duration" name="contract_duration" placeholder="e.g. 3 months, ongoing" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Work Mode (triggers location fields) -->
+    <div class="section">
+      <h2>Work Preferences</h2>
+      <div class="field">
+        <label for="work_mode">Preferred Work Mode <span class="req">*</span></label>
+        <select id="work_mode" name="work_mode" required onchange="handleWorkModeChange(this.value)">
+          <option value="">— Select —</option>
+          <option value="remote">Remote</option>
+          <option value="onsite">On-site</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+      </div>
+
+      <!-- Shown for Onsite / Hybrid -->
+      <div id="location_fields" class="hidden">
+        <div class="row">
+          <div class="field">
+            <label for="preferred_city">Preferred City <span class="req">*</span></label>
+            <input type="text" id="preferred_city" name="preferred_city" placeholder="e.g. Bangalore" />
+          </div>
+          <div class="field">
+            <label for="willing_to_relocate">Willing to Relocate?</label>
+            <select id="willing_to_relocate" name="willing_to_relocate">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Skills -->
+    <div class="section">
+      <h2>Skills</h2>
+      <div class="field">
+        <label>Key Skills <span class="req">*</span></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="skills" value="python" /> Python</label>
+          <label><input type="checkbox" name="skills" value="javascript" /> JavaScript / TypeScript</label>
+          <label><input type="checkbox" name="skills" value="react" /> React / Next.js</label>
+          <label><input type="checkbox" name="skills" value="ml" /> Machine Learning / AI</label>
+          <label><input type="checkbox" name="skills" value="sql" /> SQL / PostgreSQL</label>
+          <label><input type="checkbox" name="skills" value="docker" /> Docker / Kubernetes</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="other_skills">Other Skills</label>
+        <input type="text" id="other_skills" name="other_skills" placeholder="Separate with commas" />
+      </div>
+    </div>
+
+    <!-- Section 5: Documents -->
+    <div class="section">
+      <h2>Documents</h2>
+      <div class="field">
+        <label for="resume">Resume / CV <span class="req">*</span></label>
+        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
+        <p class="help">PDF or DOCX, max 5 MB</p>
+      </div>
+      <div class="field">
+        <label for="cover_letter">Cover Letter</label>
+        <input type="file" id="cover_letter" name="cover_letter" accept=".pdf,.doc,.docx" />
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-application">Submit Application</button>
+  </form>
+</div>
+
+<script>
+function handleRoleChange(value) {
+  document.getElementById('fulltime_fields').classList.add('hidden');
+  document.getElementById('internship_fields').classList.add('hidden');
+  document.getElementById('contract_fields').classList.add('hidden');
+
+  if (value === 'fulltime') document.getElementById('fulltime_fields').classList.remove('hidden');
+  else if (value === 'internship') document.getElementById('internship_fields').classList.remove('hidden');
+  else if (value === 'contract') document.getElementById('contract_fields').classList.remove('hidden');
+}
+
+function handleWorkModeChange(value) {
+  const locationFields = document.getElementById('location_fields');
+  if (value === 'onsite' || value === 'hybrid') {
+    locationFields.classList.remove('hidden');
+  } else {
+    locationFields.classList.add('hidden');
+  }
+}
+
+document.getElementById('dynamic-application-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  alert('FormPilot Test: Form submitted successfully! (This is a test form.)');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repeated Sections Form — FormPilot Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; color: #f1f5f9; }
+    .subtitle { font-size: 0.875rem; color: #64748b; margin-bottom: 32px; }
+    .section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .section-header h2 { font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .entry { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin-bottom: 14px; position: relative; }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .entry-number { font-size: 0.75rem; font-weight: 600; color: #6366f1; }
+    .remove-btn { background: none; border: 1px solid #ef4444; color: #ef4444; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; }
+    .remove-btn:hover { background: #ef4444; color: white; }
+    .add-btn { background: none; border: 1px dashed #6366f1; color: #6366f1; border-radius: 8px; padding: 10px 16px; font-size: 0.875rem; cursor: pointer; width: 100%; margin-top: 4px; transition: all 0.2s; }
+    .add-btn:hover { background: #6366f120; }
+    .field { margin-bottom: 14px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; color: #cbd5e1; }
+    label .req { color: #f87171; }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: #e2e8f0; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: #6366f1; }
+    select option { background: #1e293b; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    textarea { resize: vertical; min-height: 80px; }
+    .submit-btn { width: 100%; padding: 14px; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .submit-btn:hover { background: #4f46e5; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; background: #1e3a5f; color: #60a5fa; margin-bottom: 12px; }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; font-weight: 400; cursor: pointer; }
+    .checkbox-label input { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="badge">FormPilot Test — Repeated Sections</div>
+  <h1>Detailed Application Form</h1>
+  <p class="subtitle">Tests repeated education and experience sections with Add/Remove functionality.</p>
+
+  <form id="repeated-sections-form" novalidate>
+
+    <!-- Personal Info -->
+    <div class="section">
+      <div class="section-header"><h2>Personal Information</h2></div>
+      <div class="row">
+        <div class="field">
+          <label for="full_name">Full Name <span class="req">*</span></label>
+          <input type="text" id="full_name" name="full_name" placeholder="Full legal name" required />
+        </div>
+        <div class="field">
+          <label for="email_address">Email Address <span class="req">*</span></label>
+          <input type="email" id="email_address" name="email_address" required placeholder="email@example.com" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="mobile_number">Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="mobile_number" name="mobile_number" required placeholder="+91 …" />
+        </div>
+        <div class="field">
+          <label for="date_of_birth">Date of Birth</label>
+          <input type="date" id="date_of_birth" name="date_of_birth" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="current_address">Current Address <span class="req">*</span></label>
+        <textarea id="current_address" name="current_address" placeholder="Street, City, State, PIN" required></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="city">City <span class="req">*</span></label>
+          <input type="text" id="city" name="city" required />
+        </div>
+        <div class="field">
+          <label for="state">State <span class="req">*</span></label>
+          <input type="text" id="state" name="state" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- Education (Repeatable) -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Education</h2>
+      </div>
+      <div id="education-entries">
+        <!-- Entry 1 (initial) -->
+        <div class="entry" id="edu-entry-1">
+          <div class="entry-header">
+            <span class="entry-number">Education 1</span>
+          </div>
+          <div class="field">
+            <label for="edu_institution_1">Institution Name <span class="req">*</span></label>
+            <input type="text" id="edu_institution_1" name="edu_institution_1" placeholder="University / College / School" required />
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="edu_degree_1">Degree / Qualification <span class="req">*</span></label>
+              <select id="edu_degree_1" name="edu_degree_1" required>
+                <option value="">Select degree</option>
+                <option value="btech">B.Tech / B.E.</option>
+                <option value="bsc">B.Sc.</option>
+                <option value="bca">BCA</option>
+                <option value="mtech">M.Tech / M.E.</option>
+                <option value="msc">M.Sc.</option>
+                <option value="mca">MCA</option>
+                <option value="mba">MBA</option>
+                <option value="phd">Ph.D.</option>
+                <option value="diploma">Diploma</option>
+                <option value="class12">Class XII (12th)</option>
+                <option value="class10">Class X (10th)</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="edu_specialisation_1">Specialisation</label>
+              <input type="text" id="edu_specialisation_1" name="edu_specialisation_1" placeholder="e.g. Computer Science" />
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="edu_start_1">Start Year <span class="req">*</span></label>
+              <input type="number" id="edu_start_1" name="edu_start_1" placeholder="2020" min="1990" max="2030" required />
+            </div>
+            <div class="field">
+              <label for="edu_end_1">End Year</label>
+              <input type="number" id="edu_end_1" name="edu_end_1" placeholder="2024" min="1990" max="2030" />
+            </div>
+            <div class="field">
+              <label for="edu_cgpa_1">CGPA / % <span class="req">*</span></label>
+              <input type="text" id="edu_cgpa_1" name="edu_cgpa_1" placeholder="8.5 or 85%" required />
+            </div>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="edu_pursuing_1" name="edu_pursuing_1" />
+            Currently pursuing this course
+          </label>
+        </div>
+      </div>
+      <button type="button" class="add-btn" id="add-education" onclick="addEducation()">+ Add another education record</button>
+    </div>
+
+    <!-- Experience (Repeatable) -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Work Experience</h2>
+      </div>
+      <div id="experience-entries">
+        <!-- Entry 1 (initial) -->
+        <div class="entry" id="exp-entry-1">
+          <div class="entry-header">
+            <span class="entry-number">Experience 1</span>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="exp_company_1">Company Name <span class="req">*</span></label>
+              <input type="text" id="exp_company_1" name="exp_company_1" placeholder="Employer" required />
+            </div>
+            <div class="field">
+              <label for="exp_title_1">Job Title <span class="req">*</span></label>
+              <input type="text" id="exp_title_1" name="exp_title_1" placeholder="Your role" required />
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="exp_start_1">Start Date <span class="req">*</span></label>
+              <input type="month" id="exp_start_1" name="exp_start_1" required />
+            </div>
+            <div class="field">
+              <label for="exp_end_1">End Date</label>
+              <input type="month" id="exp_end_1" name="exp_end_1" />
+            </div>
+          </div>
+          <label class="checkbox-label" style="margin-bottom: 12px;">
+            <input type="checkbox" id="exp_current_1" name="exp_current_1" onchange="toggleCurrentJob(this, 'exp_end_1')" />
+            I currently work here
+          </label>
+          <div class="field">
+            <label for="exp_description_1">Key Responsibilities / Achievements</label>
+            <textarea id="exp_description_1" name="exp_description_1" placeholder="Describe your role and impact…"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top: 12px;">
+        <label>
+          <input type="checkbox" id="no_experience" name="no_experience" onchange="toggleNoExperience(this)" /> I have no work experience (Fresher)
+        </label>
+      </div>
+      <button type="button" class="add-btn" id="add-experience" onclick="addExperience()">+ Add another experience record</button>
+    </div>
+
+    <!-- Skills -->
+    <div class="section">
+      <div class="section-header"><h2>Skills & Links</h2></div>
+      <div class="field">
+        <label for="skills_list">Key Technical Skills <span class="req">*</span></label>
+        <input type="text" id="skills_list" name="skills_list" required placeholder="Python, React, PostgreSQL, …" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="linkedin_url">LinkedIn URL</label>
+          <input type="url" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/…" />
+        </div>
+        <div class="field">
+          <label for="github_url">GitHub URL</label>
+          <input type="url" id="github_url" name="github_url" placeholder="https://github.com/…" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="resume_upload">Resume <span class="req">*</span></label>
+        <input type="file" id="resume_upload" name="resume_upload" accept=".pdf,.doc,.docx" required />
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
+  </form>
+</div>
+
+<script>
+let eduCount = 1;
+let expCount = 1;
+
+function addEducation() {
+  eduCount++;
+  const container = document.getElementById('education-entries');
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.id = `edu-entry-${eduCount}`;
+  entry.innerHTML = `
+    <div class="entry-header">
+      <span class="entry-number">Education ${eduCount}</span>
+      <button type="button" class="remove-btn" onclick="this.closest('.entry').remove()">Remove</button>
+    </div>
+    <div class="field">
+      <label for="edu_institution_${eduCount}">Institution Name <span class="req">*</span></label>
+      <input type="text" id="edu_institution_${eduCount}" name="edu_institution_${eduCount}" placeholder="University / College / School" required />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="edu_degree_${eduCount}">Degree <span class="req">*</span></label>
+        <select id="edu_degree_${eduCount}" name="edu_degree_${eduCount}" required>
+          <option value="">Select</option>
+          <option value="btech">B.Tech / B.E.</option>
+          <option value="bsc">B.Sc.</option>
+          <option value="mtech">M.Tech</option>
+          <option value="msc">M.Sc.</option>
+          <option value="mba">MBA</option>
+          <option value="class12">Class XII</option>
+          <option value="class10">Class X</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="edu_specialisation_${eduCount}">Specialisation</label>
+        <input type="text" id="edu_specialisation_${eduCount}" name="edu_specialisation_${eduCount}" />
+      </div>
+    </div>
+    <div class="row-3">
+      <div class="field"><label>Start Year</label><input type="number" id="edu_start_${eduCount}" name="edu_start_${eduCount}" placeholder="2020" /></div>
+      <div class="field"><label>End Year</label><input type="number" id="edu_end_${eduCount}" name="edu_end_${eduCount}" placeholder="2024" /></div>
+      <div class="field"><label>CGPA / %</label><input type="text" id="edu_cgpa_${eduCount}" name="edu_cgpa_${eduCount}" placeholder="8.5" /></div>
+    </div>
+  `;
+  container.appendChild(entry);
+}
+
+function addExperience() {
+  expCount++;
+  const container = document.getElementById('experience-entries');
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.id = `exp-entry-${expCount}`;
+  entry.innerHTML = `
+    <div class="entry-header">
+      <span class="entry-number">Experience ${expCount}</span>
+      <button type="button" class="remove-btn" onclick="this.closest('.entry').remove()">Remove</button>
+    </div>
+    <div class="row">
+      <div class="field"><label>Company <span class="req">*</span></label><input type="text" id="exp_company_${expCount}" name="exp_company_${expCount}" required /></div>
+      <div class="field"><label>Job Title <span class="req">*</span></label><input type="text" id="exp_title_${expCount}" name="exp_title_${expCount}" required /></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Start Date</label><input type="month" id="exp_start_${expCount}" name="exp_start_${expCount}" /></div>
+      <div class="field"><label>End Date</label><input type="month" id="exp_end_${expCount}" name="exp_end_${expCount}" /></div>
+    </div>
+    <div class="field"><label><textarea id="exp_description_${expCount}" name="exp_description_${expCount}" placeholder="Describe your role…"></textarea></label></div>
+  `;
+  container.appendChild(entry);
+}
+
+function toggleCurrentJob(checkbox, endId) {
+  const endInput = document.getElementById(endId);
+  if (endInput) endInput.disabled = checkbox.checked;
+}
+
+function toggleNoExperience(checkbox) {
+  document.getElementById('add-experience').disabled = checkbox.checked;
+  const entries = document.getElementById('experience-entries');
+  entries.style.opacity = checkbox.checked ? '0.4' : '1';
+  entries.style.pointerEvents = checkbox.checked ? 'none' : 'auto';
+}
+
+document.getElementById('repeated-sections-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  alert('FormPilot Test: Form submitted! (Test form)');
+});
+</script>
+</body>
+</html>

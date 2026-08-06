@@ -1,90 +1,50 @@
 """
-Generic fallback adapter — handles any website not matched by a specific adapter.
+browser/adapters/__init__.py — Platform adapter registry.
+
+Adapters handle ATS-specific behaviour: custom dropdowns, repeated sections,
+multi-step navigation, file upload widgets.
+
+Each adapter exposes:
+  DOMAINS  — list of domain fragments that identify this platform
+  detect(page) → bool  — returns True if this adapter handles the current page
+  prepare(page)        — optional setup before extraction
+  after_fill(page)     — optional hook after all fills complete
+
+Usage:
+    from app.browser.adapters import get_adapter
+    adapter = await get_adapter(page)
+    if adapter:
+        await adapter.prepare(page)
 """
-from playwright.async_api import Page, Locator
-from typing import Optional
+from __future__ import annotations
 
-from app.browser.adapters.base import BaseAdapter
-from app.agents.state import DetectedField
+from typing import Optional, Type
+from playwright.async_api import Page
 
-
-class GreenhouseAdapter(BaseAdapter):
-    """Adapter for Greenhouse ATS (boards.greenhouse.io)"""
-
-    @classmethod
-    def detect(cls, url: str) -> bool:
-        return "greenhouse.io" in url or "boards.greenhouse" in url
-
-    @classmethod
-    async def locate_apply_button(cls, page: Page) -> Optional[Locator]:
-        for selector in ["#apply_button", "a:has-text('Apply for this Job')", "button:has-text('Apply')"]:
-            try:
-                el = page.locator(selector).first
-                if await el.is_visible(timeout=2000):
-                    return el
-            except Exception:
-                pass
-        return None
+from .base import BaseAdapter
+from .greenhouse import GreenhouseAdapter
+from .lever import LeverAdapter
 
 
-class LeverAdapter(BaseAdapter):
-    """Adapter for Lever ATS (jobs.lever.co)"""
-
-    @classmethod
-    def detect(cls, url: str) -> bool:
-        return "lever.co" in url
-
-    @classmethod
-    async def locate_apply_button(cls, page: Page) -> Optional[Locator]:
-        for selector in [".postings-btn", "a:has-text('Apply for this job')", "a[class*='btn-apply']"]:
-            try:
-                el = page.locator(selector).first
-                if await el.is_visible(timeout=2000):
-                    return el
-            except Exception:
-                pass
-        return None
-
-
-class WorkdayAdapter(BaseAdapter):
-    """Adapter for Workday ATS (myworkdayjobs.com)"""
-
-    @classmethod
-    def detect(cls, url: str) -> bool:
-        return "myworkdayjobs.com" in url or "workday.com" in url
-
-    @classmethod
-    async def locate_apply_button(cls, page: Page) -> Optional[Locator]:
-        for selector in ["[data-automation-id='applyBtn']", "button:has-text('Apply')"]:
-            try:
-                el = page.locator(selector).first
-                if await el.is_visible(timeout=2000):
-                    return el
-            except Exception:
-                pass
-        return None
-
-
-class GenericAdapter(BaseAdapter):
-    """Generic fallback adapter for unrecognized platforms."""
-
-    @classmethod
-    def detect(cls, url: str) -> bool:
-        return True  # Always matches as fallback
-
-
-# Registry of adapters in priority order
-ADAPTER_REGISTRY: list[type[BaseAdapter]] = [
+# Registry — ordered by specificity (more specific first)
+_ADAPTERS: list[Type[BaseAdapter]] = [
     GreenhouseAdapter,
     LeverAdapter,
-    WorkdayAdapter,
-    GenericAdapter,  # Must be last
 ]
 
 
-def get_adapter(url: str) -> type[BaseAdapter]:
-    """Return the most specific adapter for the given URL."""
-    for adapter_cls in ADAPTER_REGISTRY:
-        if adapter_cls.detect(url) and adapter_cls is not GenericAdapter:
-            return adapter_cls
-    return GenericAdapter
+async def get_adapter(page: Page) -> Optional[BaseAdapter]:
+    """
+    Return the first matching adapter for the current page URL,
+    or None if the page should use the generic extraction engine.
+    """
+    current_url = page.url.lower()
+    for adapter_cls in _ADAPTERS:
+        if any(domain in current_url for domain in adapter_cls.DOMAINS):
+            adapter = adapter_cls()
+            if await adapter.detect(page):
+                return adapter
+    return None
+
+
+__all__ = ["get_adapter", "BaseAdapter", "GreenhouseAdapter", "LeverAdapter"]

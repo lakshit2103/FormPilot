@@ -68,7 +68,6 @@ class AuthService:
         result = await db.execute(
             select(EmailVerificationToken).where(
                 EmailVerificationToken.token_hash == token_hash,
-                EmailVerificationToken.used_at.is_(None),
                 EmailVerificationToken.expires_at > datetime.now(timezone.utc),
             )
         )
@@ -114,8 +113,15 @@ class AuthService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password.")
         if not user.is_active:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is inactive.")
+        
+        # Auto-verify email in development mode or if already verified
         if not user.is_email_verified:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified. Please check your inbox.")
+            if settings.APP_ENV == "development":
+                user.is_email_verified = True
+                await db.commit()
+                await db.refresh(user)
+            else:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified. Please check your inbox.")
 
         access_token = create_access_token(str(user.id))
         plain_refresh = generate_secure_token()

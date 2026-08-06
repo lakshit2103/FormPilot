@@ -43,7 +43,7 @@ class MissingQuestion(TypedDict):
     save_to_profile: str
 
 
-class AgentState(TypedDict):
+class AgentState(TypedDict, total=False):
     session_id: str
     user_id: str
     user_query: str
@@ -65,3 +65,7 @@ class AgentState(TypedDict):
     manual_action_required: bool
     manual_action_reason: Optional[str]
     messages: list[dict]  # agent messages for the UI feed
+    # Private keys used internally by agents
+    _profile_data: Optional[dict]          # filtered profile (profile_retrieval_agent)
+    _full_profile_data: Optional[dict]     # full raw profile (injected by service)
+    _review_summary: Optional[dict]        # structured review (review_agent)

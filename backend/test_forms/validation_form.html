@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validation Form — FormPilot Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 0.875rem; color: #64748b; margin-bottom: 32px; }
+    .section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .section h2 { font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 18px; }
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; color: #cbd5e1; }
+    .req { color: #f87171; }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: #e2e8f0; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: #6366f1; }
+    input.error, select.error, textarea.error { border-color: #ef4444; }
+    input.valid, select.valid, textarea.valid { border-color: #22c55e; }
+    .error-msg { color: #f87171; font-size: 0.75rem; margin-top: 4px; display: none; }
+    .error-msg.visible { display: block; }
+    .help { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+    .char-counter { font-size: 0.75rem; color: #64748b; margin-top: 4px; text-align: right; }
+    .char-counter.warn { color: #f59e0b; }
+    .char-counter.over { color: #ef4444; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .otp-fields { display: flex; gap: 10px; }
+    .otp-fields input { width: 50px; text-align: center; font-size: 1.25rem; padding: 10px 4px; }
+    .submit-btn { width: 100%; padding: 14px; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .submit-btn:hover:not(:disabled) { background: #4f46e5; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; background: #1e3a5f; color: #60a5fa; margin-bottom: 12px; }
+    .strength-bar { height: 4px; border-radius: 2px; margin-top: 6px; background: #334155; overflow: hidden; }
+    .strength-fill { height: 100%; transition: width 0.3s, background 0.3s; }
+    select option { background: #1e293b; }
+    .radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-label { display: flex; align-items: center; gap: 8px; font-weight: 400; cursor: pointer; }
+    .radio-label input { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="badge">FormPilot Test — Validation & Constraints</div>
+  <h1>Registration Form with Validation</h1>
+  <p class="subtitle">Tests inline browser validation, character limits, pattern matching, and real-time feedback.</p>
+
+  <form id="validation-form" novalidate>
+
+    <!-- Basic Info with constraints -->
+    <div class="section">
+      <h2>Account Setup</h2>
+      <div class="row">
+        <div class="field">
+          <label for="v_first_name">First Name <span class="req">*</span></label>
+          <input type="text" id="v_first_name" name="v_first_name" required minlength="2" maxlength="50" placeholder="Min 2 chars" aria-describedby="fname-error" />
+          <div id="fname-error" class="error-msg">First name must be at least 2 characters.</div>
+        </div>
+        <div class="field">
+          <label for="v_last_name">Last Name <span class="req">*</span></label>
+          <input type="text" id="v_last_name" name="v_last_name" required minlength="2" maxlength="50" placeholder="Min 2 chars" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="v_username">Username <span class="req">*</span></label>
+        <input type="text" id="v_username" name="v_username" required minlength="3" maxlength="20" pattern="[a-z0-9_]+" placeholder="lowercase, numbers, underscore only" aria-describedby="username-error" />
+        <div id="username-error" class="error-msg">Username: 3-20 chars, lowercase letters, numbers and underscores only.</div>
+        <p class="help">e.g. john_doe99</p>
+      </div>
+
+      <div class="field">
+        <label for="v_email">Email Address <span class="req">*</span></label>
+        <input type="email" id="v_email" name="v_email" required placeholder="you@example.com" aria-describedby="email-error" />
+        <div id="email-error" class="error-msg">Please enter a valid email address.</div>
+      </div>
+
+      <div class="field">
+        <label for="v_password">Password <span class="req">*</span></label>
+        <input type="password" id="v_password" name="v_password" required minlength="8" placeholder="Min 8 characters" aria-describedby="pwd-error" oninput="checkPasswordStrength(this.value)" />
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0%"></div></div>
+        <div id="pwd-error" class="error-msg">Password must be at least 8 characters and contain letters and numbers.</div>
+      </div>
+
+      <div class="field">
+        <label for="v_confirm_password">Confirm Password <span class="req">*</span></label>
+        <input type="password" id="v_confirm_password" name="v_confirm_password" required placeholder="Repeat password" aria-describedby="cpwd-error" />
+        <div id="cpwd-error" class="error-msg">Passwords do not match.</div>
+      </div>
+    </div>
+
+    <!-- Contact with phone pattern -->
+    <div class="section">
+      <h2>Contact Details</h2>
+      <div class="field">
+        <label for="v_phone">Phone Number <span class="req">*</span></label>
+        <input type="tel" id="v_phone" name="v_phone" required pattern="[+]?[0-9\s\-]{10,15}" placeholder="+91 98765 43210" aria-describedby="phone-error" />
+        <div id="phone-error" class="error-msg">Enter a valid phone number (10–15 digits, may include + and spaces).</div>
+      </div>
+
+      <div class="field">
+        <label for="v_website">Personal Website / Portfolio</label>
+        <input type="url" id="v_website" name="v_website" placeholder="https://yoursite.com" aria-describedby="url-error" />
+        <div id="url-error" class="error-msg">Please enter a valid URL starting with https://</div>
+      </div>
+
+      <div class="field">
+        <label for="v_dob">Date of Birth <span class="req">*</span></label>
+        <input type="date" id="v_dob" name="v_dob" required max="2007-01-01" min="1950-01-01" aria-describedby="dob-error" />
+        <div id="dob-error" class="error-msg">You must be at least 18 years old.</div>
+      </div>
+    </div>
+
+    <!-- Free text with char limit -->
+    <div class="section">
+      <h2>About You</h2>
+      <div class="field">
+        <label for="v_bio">Short Bio <span class="req">*</span></label>
+        <textarea id="v_bio" name="v_bio" required minlength="50" maxlength="500" placeholder="Write a brief introduction (50–500 characters)…" oninput="updateCounter('v_bio', 'bio-counter', 500)" aria-describedby="bio-error"></textarea>
+        <div class="char-counter" id="bio-counter">0 / 500</div>
+        <div id="bio-error" class="error-msg">Bio must be between 50 and 500 characters.</div>
+      </div>
+
+      <div class="field">
+        <label for="v_cover_note">Why do you want to join us? <span class="req">*</span></label>
+        <textarea id="v_cover_note" name="v_cover_note" required minlength="100" maxlength="1000" placeholder="Minimum 100 characters…" oninput="updateCounter('v_cover_note', 'cover-counter', 1000)"></textarea>
+        <div class="char-counter" id="cover-counter">0 / 1000</div>
+      </div>
+    </div>
+
+    <!-- Numeric range fields -->
+    <div class="section">
+      <h2>Preferences</h2>
+      <div class="row">
+        <div class="field">
+          <label for="v_experience_years">Years of Experience <span class="req">*</span></label>
+          <input type="number" id="v_experience_years" name="v_experience_years" required min="0" max="50" placeholder="0–50" />
+        </div>
+        <div class="field">
+          <label for="v_salary">Expected Salary (₹ LPA) <span class="req">*</span></label>
+          <input type="number" id="v_salary" name="v_salary" required min="1" max="200" step="0.5" placeholder="1–200" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Employment Type Preference <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="emp_preference" value="fulltime" required /> Full-Time</label>
+          <label class="radio-label"><input type="radio" name="emp_preference" value="parttime" /> Part-Time</label>
+          <label class="radio-label"><input type="radio" name="emp_preference" value="contract" /> Contract</label>
+          <label class="radio-label"><input type="radio" name="emp_preference" value="internship" /> Internship</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="v_start_date">Earliest Start Date <span class="req">*</span></label>
+        <input type="date" id="v_start_date" name="v_start_date" required />
+      </div>
+    </div>
+
+    <!-- Agreement -->
+    <div class="section">
+      <h2>Agreements</h2>
+      <div class="field">
+        <label class="radio-label">
+          <input type="checkbox" id="terms_accept" name="terms_accept" required />
+          I agree to the <a href="#" style="color:#6366f1">Terms and Conditions</a> and <a href="#" style="color:#6366f1">Privacy Policy</a> <span class="req">*</span>
+        </label>
+      </div>
+      <div class="field">
+        <label class="radio-label">
+          <input type="checkbox" id="info_accurate" name="info_accurate" required />
+          I confirm that all information provided is accurate and complete <span class="req">*</span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-validation-form">Submit Registration</button>
+  </form>
+</div>
+
+<script>
+function updateCounter(fieldId, counterId, max) {
+  const field = document.getElementById(fieldId);
+  const counter = document.getElementById(counterId);
+  const len = field.value.length;
+  counter.textContent = `${len} / ${max}`;
+  counter.className = 'char-counter';
+  if (len > max * 0.9) counter.classList.add('warn');
+  if (len >= max) counter.classList.add('over');
+}
+
+function checkPasswordStrength(value) {
+  const fill = document.getElementById('strength-fill');
+  let strength = 0;
+  if (value.length >= 8) strength++;
+  if (/[A-Z]/.test(value)) strength++;
+  if (/[0-9]/.test(value)) strength++;
+  if (/[^A-Za-z0-9]/.test(value)) strength++;
+
+  const colors = ['#ef4444', '#f59e0b', '#22c55e', '#6366f1'];
+  const widths = ['25%', '50%', '75%', '100%'];
+  fill.style.width = strength > 0 ? widths[strength - 1] : '0%';
+  fill.style.background = strength > 0 ? colors[strength - 1] : 'transparent';
+}
+
+// Real-time OTP field navigation
+document.querySelectorAll('.otp-fields input').forEach((input, i, inputs) => {
+  input.addEventListener('input', () => {
+    if (input.value.length === 1 && i < inputs.length - 1) inputs[i + 1].focus();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && input.value === '' && i > 0) inputs[i - 1].focus();
+  });
+});
+
+document.getElementById('validation-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  let valid = true;
+
+  // Password match check
+  const pwd = document.getElementById('v_password').value;
+  const cpwd = document.getElementById('v_confirm_password').value;
+  const cpwdErr = document.getElementById('cpwd-error');
+  if (pwd !== cpwd) {
+    cpwdErr.classList.add('visible');
+    document.getElementById('v_confirm_password').classList.add('error');
+    valid = false;
+  } else {
+    cpwdErr.classList.remove('visible');
+    document.getElementById('v_confirm_password').classList.remove('error');
+  }
+
+  if (valid && this.checkValidity()) {
+    alert('FormPilot Test: Registration submitted! (Test form)');
+  } else {
+    this.reportValidity();
+  }
+});
+</script>
+</body>
+</html>

@@ -258,8 +258,12 @@ async def run_search_phase(
     event_queue: asyncio.Queue,
 ) -> AgentState:
     """Run parse_request → search_jobs → rank_results, emit events to queue."""
+    # Pre-load full profile so it's available when the pipeline continues
+    profile_data = await _load_profile_data(db, user)
+
     state = _empty_state(str(session.id), str(user.id), session.user_query)
     state["_event_queue"] = event_queue
+    state["_full_profile_data"] = profile_data
 
     from app.agents.graph import get_graph
     graph = get_graph()
@@ -291,6 +295,7 @@ async def run_full_pipeline(
     state = _empty_state(str(session.id), str(user.id), session.user_query)
     state["selected_job"] = {"url": job_url, "title": "Direct URL"}
     state["_profile_data"] = profile_data
+    state["_full_profile_data"] = profile_data  # for profile_retrieval_agent
     state["_event_queue"] = event_queue
 
     # Restore intent from session
@@ -343,6 +348,13 @@ async def run_full_pipeline(
     state["messages"] = []
 
     state = await run_validation_agent(state)
+    for msg in state.get("messages", []):
+        await event_queue.put(msg)
+    state["messages"] = []
+
+    # Build review summary
+    from app.agents.review_agent import run_review_agent
+    state = await run_review_agent(state)
     for msg in state.get("messages", []):
         await event_queue.put(msg)
     state["messages"] = []

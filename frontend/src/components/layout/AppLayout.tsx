@@ -1,7 +1,6 @@
-import { NavLink, useNavigate } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  Bot, LayoutDashboard, User, FileText, History, LogOut,
-  Zap, Settings
+  Bot, LayoutDashboard, User, FileText, History, LogOut, Settings
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { authApi } from '@/api/auth'
@@ -9,10 +8,11 @@ import { useToast } from '@/components/ui/Toast'
 import { getInitials } from '@/utils/cn'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/profile', icon: User, label: 'Profile' },
-  { to: '/documents', icon: FileText, label: 'Documents' },
-  { to: '/applications', icon: History, label: 'Applications' },
+  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/profile', label: 'Profile' },
+  { to: '/documents', label: 'Documents' },
+  { to: '/applications', label: 'Applications' },
+  { to: '/settings', label: 'Settings' },
 ]
 
 export function AppLayout({ children }: { children: React.ReactNode }) {

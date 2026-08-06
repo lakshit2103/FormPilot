@@ -39,7 +39,8 @@ export default function LoginPage() {
       navigate(setup_complete ? '/dashboard' : '/onboarding', { replace: true })
     },
     onError: (err: any) => {
-      toast(err?.response?.data?.detail || 'Login failed. Please try again.', 'error')
+      const msg = err?.response?.data?.detail || 'Invalid email or password. Please check your credentials or click "Create one" to register.'
+      toast(msg, 'error')
     },
   })
 
