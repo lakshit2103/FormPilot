@@ -1,7 +1,7 @@
 /**
  * Applications API client — all endpoints for the job search + form-filling workflow.
  */
-import apiClient from './client';
+import { apiClient } from './client';
 
 export interface StartApplicationRequest {
   user_query: string;

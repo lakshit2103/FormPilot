@@ -36,7 +36,7 @@ export default function LoginPage() {
       const me = await authApi.getMe()
       setUser(me.data)
       toast('Welcome back! 🎉', 'success')
-      navigate(setup_complete ? '/dashboard' : '/onboarding', { replace: true })
+      navigate('/dashboard', { replace: true })
     },
     onError: (err: any) => {
       const msg = err?.response?.data?.detail || 'Invalid email or password. Please check your credentials or click "Create one" to register.'

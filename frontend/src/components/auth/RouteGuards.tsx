@@ -19,7 +19,6 @@ export function RequireSetup() {
   const { user, isAuthenticated } = useAuthStore()
   if (!isAuthenticated) return <Navigate to="/login" replace />
   if (!user?.is_email_verified) return <Navigate to="/verify-email" replace />
-  if (!user?.setup_complete) return <Navigate to="/onboarding" replace />
   return <Outlet />
 }
 
@@ -27,6 +26,5 @@ export function RedirectIfAuthed() {
   const { isAuthenticated, user } = useAuthStore()
   if (!isAuthenticated) return <Outlet />
   if (!user?.is_email_verified) return <Navigate to="/verify-email" replace />
-  if (!user?.setup_complete) return <Navigate to="/onboarding" replace />
   return <Navigate to="/dashboard" replace />
 }

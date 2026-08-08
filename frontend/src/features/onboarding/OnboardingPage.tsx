@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { profileApi } from '@/api/profile'
 import { documentsApi } from '@/api/documents'
+import { apiClient } from '@/api/client'
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea } from '@/components/ui/Input'
@@ -447,7 +448,12 @@ export default function OnboardingPage() {
   }
   const goBack = () => setCurrentStep(s => Math.max(0, s - 1))
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    try {
+      await apiClient.post('/api/onboarding/complete')
+    } catch {
+      // Non-blocking — still navigate even if the call fails
+    }
     if (user) setUser({ ...user, setup_complete: true })
     toast('Profile setup complete! 🎉', 'success')
     navigate('/dashboard', { replace: true })
